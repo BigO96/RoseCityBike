@@ -14,7 +14,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("Map", systemImage: "map.fill")
                 }
-            Text("Settings View")
+            SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gearshape")
                 }
