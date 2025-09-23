@@ -3,6 +3,7 @@ import SwiftUI
 struct SettingsView: View {
     private var laneSettings = LaneVisibilitySettings()
     private var zoneSettings = ZoneSettings()
+    private var zoomSettings = ZoomSettings()
 
     var body: some View {
         NavigationStack {
@@ -28,6 +29,14 @@ struct SettingsView: View {
                         Label("Southwest (SW)", systemImage: "square.grid.2x2")
                     }
                     Text("Warning, selecting mutipile zones may impact preformace.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                Section("Map Display") {
+                    Toggle(isOn: zoomSettings.overrideZoomLimit) {
+                        Label("Always Render Lanes (Ignore Zoom Limit)", systemImage: "magnifyingglass.circle")
+                    }
+                    Text("When enabled, bike lanes render at any zoom level. May impact performance when zoomed out.")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
