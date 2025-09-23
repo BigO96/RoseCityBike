@@ -35,3 +35,4 @@ struct ZoneSettings {
     var zoneSE: Binding<Bool> { Binding(get: { se }, set: { se = $0 }) }
     var zoneSW: Binding<Bool> { Binding(get: { sw }, set: { sw = $0 }) }
 }
+

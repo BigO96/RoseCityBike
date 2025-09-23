@@ -95,7 +95,6 @@ struct MapView: View {
             case .green: return laneSettings.showGreen.wrappedValue
             case .blue: return laneSettings.showBlue.wrappedValue
             case .red: return laneSettings.showRed.wrappedValue
-            case .yellow: return laneSettings.showYellow.wrappedValue
             case .purple: return laneSettings.showPurple.wrappedValue
             case .gray: return laneSettings.showGray.wrappedValue
             default: return true
