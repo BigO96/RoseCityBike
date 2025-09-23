@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsView: View {
     private var laneSettings = LaneVisibilitySettings()
+    private var zoneSettings = ZoneSettings()
 
     var body: some View {
         NavigationStack {
@@ -13,6 +14,23 @@ struct SettingsView: View {
                     colorToggle(title: "Yellow", color: .yellow, isOn: laneSettings.showYellow)
                     colorToggle(title: "Purple", color: .purple, isOn: laneSettings.showPurple)
                     colorToggle(title: "Gray", color: .gray, isOn: laneSettings.showGray)
+                }
+                Section("City Zones") {
+                    Toggle(isOn: zoneSettings.zoneNW) {
+                        Label("Northwest (NW)", systemImage: "square.grid.2x2")
+                    }
+                    Toggle(isOn: zoneSettings.zoneNE) {
+                        Label("Northeast (NE)", systemImage: "square.grid.2x2")
+                    }
+                    Toggle(isOn: zoneSettings.zoneSE) {
+                        Label("Southeast (SE)", systemImage: "square.grid.2x2")
+                    }
+                    Toggle(isOn: zoneSettings.zoneSW) {
+                        Label("Southwest (SW)", systemImage: "square.grid.2x2")
+                    }
+                    Text("Turn ON to load data for the selected zones.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
             }
             .navigationTitle("Settings")

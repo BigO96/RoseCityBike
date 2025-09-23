@@ -21,12 +21,20 @@ private func color(forConnectionType code: String) -> Color {
 struct MapView: View {
     // Visibility preferences from SettingsView
     private var laneSettings = LaneVisibilitySettings()
+    private var zoneSettings = ZoneSettings()
 
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 45.5152, longitude: -122.6784),
         span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
     ))
     @State private var segments: [CleanBikeSegment] = []
+    @State private var isLoading: Bool = true
+    @State private var lastLoadedZoneKey: String = ""
+    @State private var didLoadOnce: Bool = false
+
+    private var zoneSelectionKey: String {
+        "\(zoneSettings.zoneNW.wrappedValue ? 1 : 0)-\(zoneSettings.zoneNE.wrappedValue ? 1 : 0)-\(zoneSettings.zoneSE.wrappedValue ? 1 : 0)-\(zoneSettings.zoneSW.wrappedValue ? 1 : 0)"
+    }
 
     var body: some View {
         Map(position: $cameraPosition) {
@@ -35,10 +43,47 @@ struct MapView: View {
                     .stroke(color(forConnectionType: segment.connectionType), lineWidth: 3)
             }
         }
-        .task {
+        .task(id: zoneSelectionKey) {
+            withAnimation { isLoading = true }
             let loaded = await loadSegmentsFromBundleAsync()
             segments = loaded
-            print("✅ Loaded \(segments.count) segments from JSON files")
+            withAnimation { isLoading = false }
+            lastLoadedZoneKey = zoneSelectionKey
+            didLoadOnce = true
+            print("✅ Loaded \(segments.count) segments for zones: \(zoneSelectionKey)")
+        }
+        .onAppear {
+            // If zones changed while this tab wasn't visible, show loader and reload on appear
+            if didLoadOnce && lastLoadedZoneKey != zoneSelectionKey {
+                Task {
+                    withAnimation { isLoading = true }
+                    let loaded = await loadSegmentsFromBundleAsync()
+                    segments = loaded
+                    withAnimation { isLoading = false }
+                    lastLoadedZoneKey = zoneSelectionKey
+                }
+            }
+        }
+        .overlay(alignment: .center) {
+            if isLoading {
+                ZStack {
+                    Color.black.opacity(0.2)
+                        .ignoresSafeArea()
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .controlSize(.large)
+                        Text("Loading map data…")
+                            .font(.callout)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(24)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(.regularMaterial)
+                    )
+                }
+                .transition(.opacity)
+            }
         }
         .ignoresSafeArea()
     }
