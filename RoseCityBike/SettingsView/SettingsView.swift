@@ -40,6 +40,11 @@ struct SettingsView: View {
                         .font(.footnote)
                         .foregroundStyle(.secondary)
                 }
+                Section("Information") {
+                    NavigationLink(destination: InformationView()) {
+                        Label("About & Tips", systemImage: "info.circle")
+                    }
+                }
             }
             .navigationTitle("Settings")
         }
